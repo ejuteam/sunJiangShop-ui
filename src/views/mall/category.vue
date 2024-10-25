@@ -6,8 +6,7 @@
       <el-input v-model="listQuery.id" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目ID"/>
       <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目名称"/>
       <el-button v-permission="['GET /admin/category/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/category/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
+      <el-button v-permission="['POST /admin/category/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新增分类</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -16,30 +15,6 @@
       <el-table-column align="center" label="类目ID" prop="id" sortable/>
 
       <el-table-column align="center" label="类目名" prop="name"/>
-
-      <el-table-column align="center" property="iconUrl" label="类目图标">
-        <template slot-scope="scope">
-          <img v-if="scope.row.iconUrl" :src="scope.row.iconUrl" width="40">
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" property="picUrl" label="类目图片">
-        <template slot-scope="scope">
-          <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="80">
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="关键字" prop="keywords"/>
-
-      <el-table-column align="center" min-width="100" label="简介" prop="desc"/>
-
-      <el-table-column align="center" label="级别" prop="level">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.level === 'L1' ? 'primary' : 'info' ">{{ scope.row.level === 'L1' ? '一级类目' : '二级类目' }}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="父类目ID" prop="pid"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -56,47 +31,6 @@
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="类目名称" prop="name">
           <el-input v-model="dataForm.name"/>
-        </el-form-item>
-        <el-form-item label="关键字" prop="keywords">
-          <el-input v-model="dataForm.keywords"/>
-        </el-form-item>
-        <el-form-item label="级别" prop="level">
-          <el-select v-model="dataForm.level" @change="onLevelChange">
-            <el-option label="一级类目" value="L1"/>
-            <el-option label="二级类目" value="L2"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
-          <el-select v-model="dataForm.pid">
-            <el-option v-for="item in catL1" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="类目图标" prop="iconUrl">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadIconUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.iconUrl" :src="dataForm.iconUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="类目图片" prop="picUrl">
-          <el-upload
-            :headers="headers"
-            :action="uploadPath"
-            :show-file-list="false"
-            :on-success="uploadPicUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="类目简介" prop="desc">
-          <el-input v-model="dataForm.desc"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -154,9 +88,7 @@ export default {
         page: 1,
         limit: 20,
         id: undefined,
-        name: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        name: undefined
       },
       catL1: {},
       dataForm: {
@@ -190,7 +122,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getCatL1()
+    // this.getCatL1()
   },
   methods: {
     getList() {
@@ -254,7 +186,7 @@ export default {
             .then(response => {
               this.list.unshift(response.data.data)
               // 更新L1目录
-              this.getCatL1()
+              // this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -291,7 +223,7 @@ export default {
                 }
               }
               // 更新L1目录
-              this.getCatL1()
+              // this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -311,7 +243,7 @@ export default {
       deleteCategory(row)
         .then(response => {
           // 更新L1目录
-          this.getCatL1()
+          // this.getCatL1()
           this.$notify.success({
             title: '成功',
             message: '删除成功'
@@ -325,38 +257,6 @@ export default {
             message: response.data.errmsg
           })
         })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = [
-          '类目ID',
-          '名称',
-          '关键字',
-          '级别',
-          '父类目ID',
-          '类目图标',
-          '类目图片',
-          '简介'
-        ]
-        const filterVal = [
-          'id',
-          'name',
-          'keywords',
-          'level',
-          'pid',
-          'iconUrl',
-          'picUrl',
-          'desc'
-        ]
-        excel.export_json_to_excel2(
-          tHeader,
-          this.list,
-          filterVal,
-          '商品类目信息'
-        )
-        this.downloadLoading = false
-      })
     }
   }
 }
