@@ -3,8 +3,8 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.id" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目ID"/>
-      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入类目名称"/>
+      <el-input v-model="listQuery.id" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入分类ID"/>
+      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入分类名称"/>
       <el-button v-permission="['GET /admin/category/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/category/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">新增分类</el-button>
     </div>
@@ -12,9 +12,9 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
 
-      <el-table-column align="center" label="类目ID" prop="id" sortable/>
+      <el-table-column align="center" label="分类ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="类目名" prop="name"/>
+      <el-table-column align="center" label="分类名称" prop="name"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -29,7 +29,7 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="类目名称" prop="name">
+        <el-form-item label="分类名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
       </el-form>
@@ -108,7 +108,7 @@ export default {
         create: '创建'
       },
       rules: {
-        name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
+        name: [{ required: true, message: '分类名不能为空', trigger: 'blur' }]
       },
       downloadLoading: false
     }

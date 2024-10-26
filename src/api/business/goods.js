@@ -40,6 +40,12 @@ export function editGoods(data) {
   })
 }
 
+export function listCategory() {
+  return request({
+    url: '/goods/listCategory',
+    method: 'get'
+  })
+}
 export function listCatAndBrand() {
   return request({
     url: '/goods/catAndBrand',
