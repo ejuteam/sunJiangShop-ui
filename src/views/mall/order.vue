@@ -8,8 +8,25 @@
       <el-select v-model="listQuery.orderStatusArray" multiple size="mini" style="width: 200px" class="filter-item" placeholder="请选择订单状态">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
       </el-select>
+      <el-date-picker
+        v-model="listQuery.payStartDate"
+        type="date"
+        placeholder="支付开始时间"
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        value-format="yyyyMMdd"
+      ></el-date-picker>
+      <el-date-picker
+        v-model="listQuery.payEndDate"
+        type="date"
+        placeholder="支付结束时间"
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        value-format="yyyyMMdd"
+      ></el-date-picker>
       <el-button v-permission="['GET /admin/order/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -33,7 +50,9 @@
 
       <el-table-column align="center" min-width="120px" label="物流单号" prop="shipSn"/>
 
+<!--
       <el-table-column align="center" min-width="100px" label="物流渠道" prop="shipChannel"/>
+-->
 
       <el-table-column align="center" label="操作" min-width="150px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -109,11 +128,11 @@
     <!-- 发货对话框 -->
     <el-dialog :visible.sync="shipDialogVisible" title="发货">
       <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="快递公司" prop="shipChannel">
+<!--        <el-form-item label="快递公司" prop="shipChannel">
           <el-select v-model="shipForm.shipChannel">
             <el-option v-for="item in shipChannelList" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="快递编号" prop="shipSn">
           <el-input v-model="shipForm.shipSn"/>
         </el-form-item>
@@ -182,7 +201,9 @@ export default {
         name: undefined,
         orderStatusArray: [],
         sort: 'add_time',
-        order: 'desc'
+        order: 'desc',
+        payStartDate: '',
+        payEndDate: ''
       },
       statusMap,
       orderDialogVisible: false,
@@ -228,7 +249,16 @@ export default {
         this.shipChannelList = response.data.data.shipChannelList
       })
     },
-    handleFilter() {
+    handleFilter() { // Only format if the date is not already in the correct format
+      const isValidDate = (date) => /^\d{8}$/.test(date); // Check if date is in YYYYMMDD format
+
+      this.listQuery.payStartDate = isValidDate(this.listQuery.payStartDate)
+        ? this.listQuery.payStartDate
+        : this.formatDateToYMD(this.listQuery.payStartDate);
+
+      this.listQuery.payEndDate = isValidDate(this.listQuery.payEndDate)
+        ? this.listQuery.payEndDate
+        : this.formatDateToYMD(this.listQuery.payEndDate);
       this.listQuery.page = 1
       this.getList()
     },
@@ -295,6 +325,18 @@ export default {
         }
       })
     },
+    // Format date to YYYYMMDD format
+    formatDateToYMD(date) {
+      if (!date) return ''; // Return empty string if date is null or undefined
+      const d = new Date(date);
+      if (isNaN(d.getTime())) return ''; // Check if `d` is an invalid date
+
+      const year = d.getFullYear().toString();
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      return `${year}${month}${day}`;
+    },
+
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
