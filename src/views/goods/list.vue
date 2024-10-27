@@ -5,6 +5,11 @@
     <div class="filter-container">
       <el-input v-model="listQuery.goodsSn" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
       <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
+      <!-- 分类选择框 -->
+      <el-select v-model="listQuery.categoryId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请选择商品分类">
+        <el-option v-for="category in categoryList" :key="category.value" :label="category.label" :value="category.value"/>
+      </el-select>
+
       <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
     </div>
@@ -43,19 +48,12 @@
           <img :src="scope.row.picUrl" width="40">
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="详情" prop="detail">
+      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
             <div v-html="goodsDetail"/>
           </el-dialog>
-          <el-button type="primary" size="mini" @click="showDetail(scope.row.detail)">查看</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="价格" prop="retailPrice"/>
-
-      <el-table-column align="center" label="操作" width="150" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="showDetail(scope.row)">查看</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -93,7 +91,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods } from '@/api/business/goods'
+import { listGoods, deleteGoods, listCategory } from '@/api/business/goods'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -120,6 +118,7 @@ export default {
   },
   created() {
     this.getList()
+    this.fetchCategories() // 获取分类列表
   },
   methods: {
     getList() {
@@ -138,15 +137,27 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+
+    fetchCategories() {
+      listCategory().then(response => {
+        this.categoryList = response.data.data.items.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+      }).catch(() => {
+        this.categoryList = []
+      })
+    },
     handleCreate() {
       this.$router.push({ path: '/goods/create' })
     },
     handleUpdate(row) {
       this.$router.push({ path: '/goods/edit', query: { id: row.id }})
     },
-    showDetail(detail) {
-      this.goodsDetail = detail
-      this.detailDialogVisible = true
+    showDetail(row) {
+      /* this.goodsDetail = row
+      this.detailDialogVisible = true*/
+      this.$router.push({ path: '/goods/detail', query: { id: row.id }})
     },
     handleDelete(row) {
       deleteGoods(row).then(response => {

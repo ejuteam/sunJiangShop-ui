@@ -15,6 +15,7 @@
       <el-table-column align="center" label="分类ID" prop="id" sortable/>
 
       <el-table-column align="center" label="分类名称" prop="name"/>
+      <el-table-column align="center" label="商品数量" prop="goodsNum"/>
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">

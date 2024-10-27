@@ -108,7 +108,7 @@ export const asyncRouterMap = [
         name: 'category',
         meta: {
           perms: ['GET /admin/category/list', 'POST /admin/category/create', 'GET /admin/category/read', 'POST /admin/category/update', 'POST /admin/category/delete'],
-          title: '商品类目',
+          title: '商品分类',
           icon: 'list',
           noCache: true
         }
@@ -228,6 +228,18 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
           title: '商品编辑',
+          icon: 'form',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'detail',
+        component: () => import('@/views/goods/detail'),
+        name: 'goodsDetail',
+        meta: {
+          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
+          title: '商品详情',
           icon: 'form',
           noCache: true
         },

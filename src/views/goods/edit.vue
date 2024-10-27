@@ -302,12 +302,17 @@
       </el-form>
     </el-card>
 
-    <div class="op-container">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button
-        type="primary"
-        @click="handleEdit"
-      >更新商品</el-button>
+    <div class="app-container">
+      <!-- Rest of the template remains unchanged -->
+
+      <!-- Operation Buttons Container -->
+      <div class="op-container">
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button
+          type="primary"
+          @click="handleEdit"
+        >更新商品</el-button>
+      </div>
     </div>
 
   </div>
@@ -675,12 +680,18 @@ export default {
   color: #8c939d;
   width: 120px;
   height: 120px;
-  line-height: 120px;
   text-align: center;
+  line-height: 120px;
 }
 .avatar {
   width: 145px;
   height: 145px;
   display: block;
+}
+/* New styles to align operation buttons to the right */
+.op-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>
