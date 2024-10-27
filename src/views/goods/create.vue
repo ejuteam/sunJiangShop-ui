@@ -387,8 +387,7 @@ export default {
         this.categoryList = response.data.data.items.map(item => ({
           label: item.name,
           value: item.id
-        }));
-        console.log(this.categoryList)
+        }))
       })
     },
     handleCategoryChange(value) {
@@ -470,7 +469,7 @@ export default {
     },
     specChanged: function(label) {
       if (label === false) {
-        this.specifications = [{ specification: '规格', value: '标准', picUrl: '' }]
+        this.specifications = [{ specification: '', weight: '', repertory: '', price: '', picUrl: '' }]
         this.products = [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '' }]
       } else {
         this.specifications = []

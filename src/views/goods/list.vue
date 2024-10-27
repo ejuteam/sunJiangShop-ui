@@ -21,17 +21,14 @@
             <el-form-item label="商品介绍">
               <span>{{ props.row.brief }}</span>
             </el-form-item>
-            <el-form-item label="商品单位">
+<!--            <el-form-item label="商品单位">
               <span>{{ props.row.unit }}</span>
-            </el-form-item>
+            </el-form-item>-->
             <el-form-item label="商品分类">
               <span>{{ props.row.categoryName }}</span>
             </el-form-item>
             <el-form-item label="商品分类ID">
               <span>{{ props.row.categoryId }}</span>
-            </el-form-item>
-            <el-form-item label="品牌商ID">
-              <span>{{ props.row.brandId }}</span>
             </el-form-item>
           </el-form>
         </template>
@@ -169,7 +166,7 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['商品ID', '商品编号', '名称', '专柜价格', '当前价格', '是否新品', '是否热品', '是否在售', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '商品单位', '关键字', '类目ID', '品牌商ID']
+        const tHeader = ['商品ID', '商品编号', '名称', '首页主图', '宣传图片列表', '商品介绍', '详细介绍', '商品图片', '分类ID']
         const filterVal = ['id', 'goodsSn', 'name', 'counterPrice', 'retailPrice', 'isNew', 'isHot', 'isOnSale', 'listPicUrl', 'gallery', 'brief', 'detail', 'picUrl', 'goodsUnit', 'keywords', 'categoryId', 'brandId']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
         this.downloadLoading = false
