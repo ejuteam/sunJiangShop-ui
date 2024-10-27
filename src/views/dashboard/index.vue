@@ -95,11 +95,11 @@ export default {
   mounted() {
   },
   created() {
-    chart().then(response => {
+    /* chart().then(response => {
       this.userOrderCnt = response.data.data.userOrderCnt
       this.orderAmts = response.data.data.orderAmts
       this.categorySell = response.data.data.categorySell
-    })
+    })*/
     info().then(response => {
       this.userTotal = response.data.data.userTotal
       this.goodsTotal = response.data.data.goodsTotal
