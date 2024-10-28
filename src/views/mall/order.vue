@@ -3,14 +3,14 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input
+      <!--      <el-input
         v-model="listQuery.userId"
         clearable
         size="mini"
         class="filter-item"
         style="width: 200px;"
         placeholder="请输入用户ID"
-      />
+      />-->
       <el-input
         v-model="listQuery.orderSn"
         clearable
@@ -83,12 +83,12 @@
         sortable
       />
 
-      <el-table-column
+      <!--      <el-table-column
         align="center"
         min-width="100px"
         label="用户ID"
         prop="userId"
-      />
+      />-->
 
       <el-table-column
         align="center"
@@ -111,10 +111,15 @@
       <el-table-column
         align="center"
         min-width="100px"
-        label="支付金额"
+        label="支付金额(含邮费)"
         prop="actualPrice"
       />
-
+      <el-table-column
+        align="center"
+        min-width="100px"
+        label="邮费"
+        prop="freightPrice"
+      />
       <el-table-column
         align="center"
         min-width="120px"
@@ -221,22 +226,22 @@
             />
             <el-table-column
               align="center"
-              label="货品规格"
+              label="商品规格"
               prop="specifications"
             />
             <el-table-column
               align="center"
-              label="货品价格"
+              label="商品价格"
               prop="price"
             />
             <el-table-column
               align="center"
-              label="货品数量"
+              label="商品数量"
               prop="number"
             />
             <el-table-column
               align="center"
-              label="货品图片"
+              label="商品图片"
               prop="picUrl"
             >
               <template slot-scope="scope">
@@ -248,7 +253,7 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <el-form-item label="费用信息">
+        <!--        <el-form-item label="费用信息">
           <span>
             (实际费用){{ orderDetail.order.actualPrice }}元 =
             (商品总价){{ orderDetail.order.goodsPrice }}元 +
@@ -256,13 +261,15 @@
             (优惠减免){{ orderDetail.order.couponPrice }}元 -
             (积分减免){{ orderDetail.order.integralPrice }}元
           </span>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="支付信息">
           <span>（支付渠道）微信支付</span>
           <span>（支付时间）{{ orderDetail.order.payTime }}</span>
         </el-form-item>
         <el-form-item label="快递信息">
+          <!--
           <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
+-->
           <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
           <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
         </el-form-item>
@@ -359,7 +366,8 @@ const statusMap = {
   '待收货': [301],
   '退货/售后': [202],
   '已处理': [203],
-  '已完成/待评价': [401, 402]
+  '待评价': [401, 402],
+  '已完成': [403]
 }
 
 export default {
@@ -400,7 +408,8 @@ export default {
         '待收货': [301],
         '待处理': [202],
         '已处理': [203],
-        '已完成/待评价': [401, 402]
+        '待评价': [401, 402],
+        '已完成': [403]
       },
       computed: {
         selectedStatusLabels() {
