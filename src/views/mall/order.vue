@@ -61,6 +61,7 @@
         icon="el-icon-search"
         @click="handleFilter"
       >查找</el-button>
+      <el-button @click="resetFilters">重置</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -536,11 +537,10 @@ export default {
         }
       })
     },
-    // Format date to YYYYMMDD format
     formatDateToYMD(date) {
-      if (!date) return '' // Return empty string if date is null or undefined
+      if (!date) return ''
       const d = new Date(date)
-      if (isNaN(d.getTime())) return '' // Check if `d` is an invalid date
+      if (isNaN(d.getTime())) return ''
 
       const year = d.getFullYear().toString()
       const month = (d.getMonth() + 1).toString().padStart(2, '0')
@@ -556,6 +556,18 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '订单信息')
         this.downloadLoading = false
       })
+    },
+    resetFilters() {
+      // 重置查询条件
+      this.listQuery.userId = ''
+      this.listQuery.orderSn = ''
+      this.listQuery.orderStatusArray = []
+      this.listQuery.payStartDate = ''
+      this.listQuery.payEndDate = ''
+      this.listQuery.page = 1
+
+      // 重新获取列表数据
+      this.getList()
     }
   }
 }
