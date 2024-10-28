@@ -178,107 +178,107 @@
     />
 
     <!-- 订单详情对话框 -->
-    <el-dialog
-      :visible.sync="orderDialogVisible"
-      title="订单详情"
-      width="800"
-    >
-      <el-form
-        :data="orderDetail"
-        label-position="left"
-      >
-        <el-form-item label="订单编号">
-          <span>{{ orderDetail.order.orderSn }}</span>
+    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
+      <el-form :data="orderDetail" label-position="left" label-width="80px">
+
+        <!-- 订单信息 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">订单信息</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">订单编号：{{ orderDetail.order.orderSn }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">订单状态：<el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag></el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">下单时间：{{ orderDetail.order.addTime }}</el-col>
+          </el-row>
         </el-form-item>
-        <el-form-item label="订单状态">
-          <template slot-scope="scope">
-            <el-tag>{{ scope.order.orderStatus | orderStatusFilter }}</el-tag>
-          </template>
-        </el-form-item>
-        <el-form-item label="订单用户">
-          <span>{{ orderDetail.user.nickname }}</span>
-        </el-form-item>
-        <el-form-item label="用户留言">
-          <span>{{ orderDetail.order.message }}</span>
-        </el-form-item>
-        <el-form-item label="收货信息">
-          <span>（收货人）{{ orderDetail.order.consignee }}</span>
-          <span>（手机号）{{ orderDetail.order.mobile }}</span>
-          <span>（地址）{{ orderDetail.order.address }}</span>
-        </el-form-item>
-        <el-form-item label="商品信息">
-          <el-table
-            :data="orderDetail.orderGoods"
-            size="small"
-            border
-            fit
-            highlight-current-row
-          >
-            <el-table-column
-              align="center"
-              label="商品名称"
-              prop="goodsName"
-            />
-            <el-table-column
-              align="center"
-              label="商品编号"
-              prop="goodsSn"
-            />
-            <el-table-column
-              align="center"
-              label="商品规格"
-              prop="specifications"
-            />
-            <el-table-column
-              align="center"
-              label="商品价格"
-              prop="price"
-            />
-            <el-table-column
-              align="center"
-              label="商品数量"
-              prop="number"
-            />
-            <el-table-column
-              align="center"
-              label="商品图片"
-              prop="picUrl"
-            >
+
+        <!-- 商品信息 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">商品信息</el-col>
+          </el-row>
+          <el-table :data="orderDetail.orderGoods" size="small" border fit highlight-current-row>
+            <el-table-column align="center" label="商品名称" prop="goodsName" />
+            <el-table-column align="center" label="商品编号" prop="goodsSn" />
+            <el-table-column align="center" label="商品规格" prop="specifications" />
+            <el-table-column align="center" label="商品价格" prop="price" />
+            <el-table-column align="center" label="商品数量" prop="number" />
+            <el-table-column align="center" label="商品图片" prop="picUrl">
               <template slot-scope="scope">
-                <img
-                  :src="scope.row.picUrl"
-                  width="40"
-                >
+                <img :src="scope.row.picUrl" width="40" />
               </template>
             </el-table-column>
           </el-table>
         </el-form-item>
-        <!--        <el-form-item label="费用信息">
-          <span>
-            (实际费用){{ orderDetail.order.actualPrice }}元 =
-            (商品总价){{ orderDetail.order.goodsPrice }}元 +
-            (快递费用){{ orderDetail.order.freightPrice }}元 -
-            (优惠减免){{ orderDetail.order.couponPrice }}元 -
-            (积分减免){{ orderDetail.order.integralPrice }}元
-          </span>
-        </el-form-item>-->
-        <el-form-item label="支付信息">
-          <span>（支付渠道）微信支付</span>
-          <span>（支付时间）{{ orderDetail.order.payTime }}</span>
+
+        <!-- 支付信息 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">支付信息</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">支付渠道：微信支付</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">支付时间：{{ orderDetail.order.payTime }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">支付金额：{{ orderDetail.order.actualPrice }}元</el-col>
+          </el-row>
         </el-form-item>
-        <el-form-item label="快递信息">
-          <!--
-          <span>（快递公司）{{ orderDetail.order.shipChannel }}</span>
--->
-          <span>（快递单号）{{ orderDetail.order.shipSn }}</span>
-          <span>（发货时间）{{ orderDetail.order.shipTime }}</span>
+
+        <!-- 收货信息 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">收货信息</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">收货人：{{ orderDetail.order.consignee }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">收货电话：{{ orderDetail.order.mobile }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">地址：{{ orderDetail.order.address }}</el-col>
+          </el-row>
         </el-form-item>
-        <el-form-item label="收货信息">
-          <span>（确认收货时间）{{ orderDetail.order.confirmTime }}</span>
+
+        <!-- 快递信息 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">快递信息</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">快递公司：{{ orderDetail.order.shipChannel }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">快递单号：{{ orderDetail.order.shipSn }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">发货时间：{{ orderDetail.order.shipTime }}</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">确认收货时间：{{ orderDetail.order.confirmTime }}</el-col>
+          </el-row>
         </el-form-item>
+
+        <!-- 备注 -->
+        <el-form-item>
+          <el-row>
+            <el-col :span="24" class="section-title">备注</el-col>
+          </el-row>
+          <el-row class="content-row">
+            <el-col :span="24">{{ orderDetail.order.message }}</el-col>
+          </el-row>
+        </el-form-item>
+
       </el-form>
     </el-dialog>
-
     <!-- 发货对话框 -->
     <el-dialog
       :visible.sync="shipDialogVisible"
@@ -581,7 +581,31 @@ export default {
   }
 }
 </script>
+<style scoped>
+/* Main dialog title styling */
+.el-dialog__title {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-<style>
+/* Section titles (小标题) */
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
 
+/* Content rows (正文) */
+.content-row {
+  padding-left: 15px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8; /* Adjusts spacing between lines */
+}
+
+.el-form-item {
+  margin-bottom: 12px;
+}
 </style>
