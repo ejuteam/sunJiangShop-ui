@@ -3,11 +3,38 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
-      <el-input v-model="listQuery.orderSn" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
-      <el-select v-model="listQuery.orderStatusArray" multiple size="mini" style="width: 200px" class="filter-item" placeholder="请选择订单状态">
-        <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
+      <el-input
+        v-model="listQuery.userId"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入用户ID"
+      />
+      <el-input
+        v-model="listQuery.orderSn"
+        clearable
+        size="mini"
+        class="filter-item"
+        style="width: 200px;"
+        placeholder="请输入订单编号"
+      />
+      <el-select
+        v-model="listQuery.orderStatusArray"
+        multiple
+        size="mini"
+        style="width: 200px"
+        class="filter-item"
+        placeholder="请选择订单状态"
+      >
+        <el-option
+          v-for="(statuses, label) in statusMap"
+          :key="label"
+          :label="label"
+          :value="statuses"
+        />
       </el-select>
+
       <el-date-picker
         v-model="listQuery.payStartDate"
         type="date"
@@ -16,7 +43,7 @@
         class="filter-item"
         style="width: 200px;"
         value-format="yyyyMMdd"
-      ></el-date-picker>
+      />
       <el-date-picker
         v-model="listQuery.payEndDate"
         type="date"
@@ -25,49 +52,135 @@
         class="filter-item"
         style="width: 200px;"
         value-format="yyyyMMdd"
-      ></el-date-picker>
-      <el-button v-permission="['GET /admin/order/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      />
+      <el-button
+        v-permission="['GET /admin/order/list']"
+        size="mini"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >查找</el-button>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      size="small"
+      element-loading-text="正在查询中。。。"
+      border
+      fit
+      highlight-current-row
+    >
 
-      <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn" sortable/>
+      <el-table-column
+        align="center"
+        min-width="100"
+        label="订单编号"
+        prop="orderSn"
+        sortable
+      />
 
-      <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
+      <el-table-column
+        align="center"
+        min-width="100px"
+        label="用户ID"
+        prop="userId"
+      />
 
-      <el-table-column align="center" min-width="100px" label="订单状态" prop="orderStatus">
+      <el-table-column
+        align="center"
+        min-width="100px"
+        label="订单状态"
+        prop="orderStatus"
+      >
         <template slot-scope="scope">
           <el-tag>{{ scope.row.orderStatus | orderStatusFilter }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="100px" label="订单金额" prop="orderPrice"/>
+      <el-table-column
+        align="center"
+        min-width="100px"
+        label="订单金额"
+        prop="orderPrice"
+      />
 
-      <el-table-column align="center" min-width="100px" label="支付金额" prop="actualPrice"/>
+      <el-table-column
+        align="center"
+        min-width="100px"
+        label="支付金额"
+        prop="actualPrice"
+      />
 
-      <el-table-column align="center" min-width="120px" label="支付时间" prop="payTime"/>
+      <el-table-column
+        align="center"
+        min-width="120px"
+        label="支付时间"
+        prop="payTime"
+      />
 
-      <el-table-column align="center" min-width="120px" label="物流单号" prop="shipSn"/>
+      <el-table-column
+        align="center"
+        min-width="120px"
+        label="物流单号"
+        prop="shipSn"
+      />
 
-<!--
+      <!--
       <el-table-column align="center" min-width="100px" label="物流渠道" prop="shipChannel"/>
 -->
 
-      <el-table-column align="center" label="操作" min-width="150px" class-name="small-padding fixed-width">
+      <el-table-column
+        align="center"
+        label="操作"
+        min-width="150px"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
-          <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==202" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
+          <el-button
+            v-permission="['GET /admin/order/detail']"
+            type="primary"
+            size="mini"
+            @click="handleDetail(scope.row)"
+          >详情</el-button>
+          <el-button
+            v-if="scope.row.orderStatus==201"
+            v-permission="['POST /admin/order/ship']"
+            type="primary"
+            size="mini"
+            @click="handleShip(scope.row)"
+          >发货</el-button>
+          <el-button
+            v-if="scope.row.orderStatus==202"
+            v-permission="['POST /admin/order/refund']"
+            type="primary"
+            size="mini"
+            @click="handleRefund(scope.row)"
+          >退款</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
     <!-- 订单详情对话框 -->
-    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
-      <el-form :data="orderDetail" label-position="left">
+    <el-dialog
+      :visible.sync="orderDialogVisible"
+      title="订单详情"
+      width="800"
+    >
+      <el-form
+        :data="orderDetail"
+        label-position="left"
+      >
         <el-form-item label="订单编号">
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
@@ -88,15 +201,48 @@
           <span>（地址）{{ orderDetail.order.address }}</span>
         </el-form-item>
         <el-form-item label="商品信息">
-          <el-table :data="orderDetail.orderGoods" size="small" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="货品规格" prop="specifications" />
-            <el-table-column align="center" label="货品价格" prop="price" />
-            <el-table-column align="center" label="货品数量" prop="number" />
-            <el-table-column align="center" label="货品图片" prop="picUrl">
+          <el-table
+            :data="orderDetail.orderGoods"
+            size="small"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column
+              align="center"
+              label="商品名称"
+              prop="goodsName"
+            />
+            <el-table-column
+              align="center"
+              label="商品编号"
+              prop="goodsSn"
+            />
+            <el-table-column
+              align="center"
+              label="货品规格"
+              prop="specifications"
+            />
+            <el-table-column
+              align="center"
+              label="货品价格"
+              prop="price"
+            />
+            <el-table-column
+              align="center"
+              label="货品数量"
+              prop="number"
+            />
+            <el-table-column
+              align="center"
+              label="货品图片"
+              prop="picUrl"
+            >
               <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40">
+                <img
+                  :src="scope.row.picUrl"
+                  width="40"
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -126,42 +272,79 @@
     </el-dialog>
 
     <!-- 发货对话框 -->
-    <el-dialog :visible.sync="shipDialogVisible" title="发货">
-      <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-<!--        <el-form-item label="快递公司" prop="shipChannel">
+    <el-dialog
+      :visible.sync="shipDialogVisible"
+      title="发货"
+    >
+      <el-form
+        ref="shipForm"
+        :model="shipForm"
+        status-icon
+        label-position="left"
+        label-width="100px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <!--        <el-form-item label="快递公司" prop="shipChannel">
           <el-select v-model="shipForm.shipChannel">
             <el-option v-for="item in shipChannelList" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>-->
-        <el-form-item label="快递编号" prop="shipSn">
-          <el-input v-model="shipForm.shipSn"/>
+        <el-form-item
+          label="快递编号"
+          prop="shipSn"
+        >
+          <el-input v-model="shipForm.shipSn" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="shipDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmShip">确定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmShip"
+        >确定</el-button>
       </div>
     </el-dialog>
 
     <!-- 退款对话框 -->
-    <el-dialog :visible.sync="refundDialogVisible" title="退款">
-      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="退款金额" prop="refundMoney">
-          <el-input v-model="refundForm.refundMoney" :disabled="true"/>
+    <el-dialog
+      :visible.sync="refundDialogVisible"
+      title="退款"
+    >
+      <el-form
+        ref="refundForm"
+        :model="refundForm"
+        status-icon
+        label-position="left"
+        label-width="100px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item
+          label="退款金额"
+          prop="refundMoney"
+        >
+          <el-input
+            v-model="refundForm.refundMoney"
+            :disabled="true"
+          />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="refundDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmRefund">确定</el-button>
+        <el-button
+          type="primary"
+          @click="confirmRefund"
+        >确定</el-button>
       </div>
     </el-dialog>
 
   </div>
 </template>
-
-<style>
-
-</style>
 
 <script>
 import { listOrder, shipOrder, refundOrder, detailOrder, listShipChannel } from '@/api/business/order'
@@ -169,15 +352,13 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 import checkPermission from '@/utils/permission' // 权限判断函数
 
 const statusMap = {
-  101: '未付款',
-  102: '用户取消',
-  103: '系统取消',
-  201: '已付款',
-  202: '申请退款',
-  203: '已退款',
-  301: '已发货',
-  401: '用户收货',
-  402: '系统收货'
+  '待付款': [101],
+  '已取消': [102, 103],
+  '待发货': [201],
+  '待收货': [301],
+  '待处理': [202],
+  '已处理': [203],
+  '已完成/待评价': [401, 402]
 }
 
 export default {
@@ -185,7 +366,13 @@ export default {
   components: { Pagination },
   filters: {
     orderStatusFilter(status) {
-      return statusMap[status]
+      // 遍历 statusMap，查找包含该状态码的键
+      for (const [statusLabel, codes] of Object.entries(statusMap)) {
+        if (codes.includes(status)) {
+          return statusLabel
+        }
+      }
+      return '未知状态' // 如果找不到对应的状态码，返回“未知状态”
     }
   },
   data() {
@@ -205,7 +392,28 @@ export default {
         payStartDate: '',
         payEndDate: ''
       },
-      statusMap,
+      statusMap: {
+        '待付款': [101],
+        '已取消': [102, 103],
+        '待发货': [201],
+        '待收货': [301],
+        '待处理': [202],
+        '已处理': [203],
+        '已完成/待评价': [401, 402]
+      },
+      computed: {
+        selectedStatusLabels() {
+        // 将选中的状态代码转换为中文描述
+          return this.listQuery.orderStatusArray.map(code => {
+            for (const [label, codes] of Object.entries(this.statusMap)) {
+              if (codes.includes(code)) {
+                return label
+              }
+            }
+            return code // 如果没找到匹配的，直接返回 code
+          })
+        }
+      },
       orderDialogVisible: false,
       orderDetail: {
         order: {},
@@ -249,16 +457,19 @@ export default {
         this.shipChannelList = response.data.data.shipChannelList
       })
     },
-    handleFilter() { // Only format if the date is not already in the correct format
-      const isValidDate = (date) => /^\d{8}$/.test(date); // Check if date is in YYYYMMDD format
+    handleFilter() {
+      // 将选择的订单分类转换为状态数组
+      this.listQuery.orderStatusArray = this.listQuery.orderStatusArray.flat()
 
+      // 校验并格式化日期
+      const isValidDate = (date) => /^\d{8}$/.test(date)
       this.listQuery.payStartDate = isValidDate(this.listQuery.payStartDate)
         ? this.listQuery.payStartDate
-        : this.formatDateToYMD(this.listQuery.payStartDate);
-
+        : this.formatDateToYMD(this.listQuery.payStartDate)
       this.listQuery.payEndDate = isValidDate(this.listQuery.payEndDate)
         ? this.listQuery.payEndDate
-        : this.formatDateToYMD(this.listQuery.payEndDate);
+        : this.formatDateToYMD(this.listQuery.payEndDate)
+
       this.listQuery.page = 1
       this.getList()
     },
@@ -327,14 +538,14 @@ export default {
     },
     // Format date to YYYYMMDD format
     formatDateToYMD(date) {
-      if (!date) return ''; // Return empty string if date is null or undefined
-      const d = new Date(date);
-      if (isNaN(d.getTime())) return ''; // Check if `d` is an invalid date
+      if (!date) return '' // Return empty string if date is null or undefined
+      const d = new Date(date)
+      if (isNaN(d.getTime())) return '' // Check if `d` is an invalid date
 
-      const year = d.getFullYear().toString();
-      const month = (d.getMonth() + 1).toString().padStart(2, '0');
-      const day = d.getDate().toString().padStart(2, '0');
-      return `${year}${month}${day}`;
+      const year = d.getFullYear().toString()
+      const month = (d.getMonth() + 1).toString().padStart(2, '0')
+      const day = d.getDate().toString().padStart(2, '0')
+      return `${year}${month}${day}`
     },
 
     handleDownload() {
@@ -349,3 +560,7 @@ export default {
   }
 }
 </script>
+
+<style>
+
+</style>
