@@ -7,7 +7,6 @@
       <el-input v-model="listQuery.content" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入广告内容"/>
       <el-button v-permission="['GET /admin/ad/list']" size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/ad/create']" size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      <el-button :loading="downloadLoading" size="mini" class="filter-item" type="warning" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
