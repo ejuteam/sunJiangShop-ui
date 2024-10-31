@@ -2,66 +2,83 @@
   <div class="app-container">
 
     <!-- 查询和其他操作 -->
-    <div class="filter-container">
-      <!--      <el-input
-        v-model="listQuery.userId"
-        clearable
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        placeholder="请输入用户ID"
-      />-->
-      <el-input
-        v-model="listQuery.orderSn"
-        clearable
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        placeholder="请输入订单编号"
-      />
-      <el-select
-        v-model="listQuery.orderStatusArray"
-        multiple
-        size="mini"
-        style="width: 200px"
-        class="filter-item"
-        placeholder="请选择订单状态"
-      >
-        <el-option
-          v-for="(statuses, label) in statusMap"
-          :key="label"
-          :label="label"
-          :value="statuses"
-        />
-      </el-select>
-
-      <el-date-picker
-        v-model="listQuery.payStartDate"
-        type="date"
-        placeholder="支付开始时间"
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        value-format="yyyyMMdd"
-      />
-      <el-date-picker
-        v-model="listQuery.payEndDate"
-        type="date"
-        placeholder="支付结束时间"
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        value-format="yyyyMMdd"
-      />
-      <el-button
-        v-permission="['GET /admin/order/list']"
-        size="mini"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleFilter"
-      >查找</el-button>
-      <el-button @click="resetFilters">重置</el-button>
+    <div class="toolbar">
+      <el-card class="query-card">
+        <el-form
+          :inline="true"
+          label-width="80px"
+        >
+          <el-form-item label="订单编号">
+            <el-input
+              v-model="listQuery.orderSn"
+              clearable
+              size="mini"
+              class="filter-item"
+              style="width: 200px;"
+              placeholder="请输入订单编号"
+            />
+          </el-form-item>
+          <el-form-item label="订单状态">
+            <el-select
+              v-model="listQuery.orderStatusArray"
+              multiple
+              size="mini"
+              style="width: 200px"
+              class="filter-item"
+              placeholder="请选择订单状态"
+            >
+              <el-option
+                v-for="(statuses, label) in statusMap"
+                :key="label"
+                :label="label"
+                :value="statuses"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开始时间">
+            <el-date-picker
+              v-model="listQuery.payStartDate"
+              type="date"
+              placeholder="支付开始时间"
+              size="mini"
+              class="filter-item"
+              style="width: 250px;"
+              value-format="yyyyMMdd"
+            />
+          </el-form-item>
+          <el-form-item label="结束时间">
+            <el-date-picker
+              v-model="listQuery.payEndDate"
+              type="date"
+              placeholder="支付结束时间"
+              size="mini"
+              class="filter-item"
+              style="width: 250px;"
+              value-format="yyyyMMdd"
+            />
+          </el-form-item>
+          <el-form-item
+            class="query-buttons"
+            style="margin-left: auto;"
+          >
+            <el-button
+              v-permission="['GET /admin/order/list']"
+              size="mini"
+              class="filter-item"
+              type="primary"
+              icon="el-icon-search"
+              @click="handleFilter"
+            >查找</el-button>
+            <el-button
+              size="mini"
+              class="filter-item"
+              icon="el-icon-refresh"
+              @click="resetFilters"
+            >重置
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </div>
 
     <!-- 查询结果 -->
@@ -178,13 +195,24 @@
     />
 
     <!-- 订单详情对话框 -->
-    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
-      <el-form :data="orderDetail" label-position="left" label-width="80px">
+    <el-dialog
+      :visible.sync="orderDialogVisible"
+      title="订单详情"
+      width="800"
+    >
+      <el-form
+        :data="orderDetail"
+        label-position="left"
+        label-width="80px"
+      >
 
         <!-- 订单信息 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">订单信息</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >订单信息</el-col>
           </el-row>
           <el-row class="content-row">
             <el-col :span="24">订单编号：{{ orderDetail.order.orderSn }}</el-col>
@@ -200,17 +228,53 @@
         <!-- 商品信息 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">商品信息</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >商品信息</el-col>
           </el-row>
-          <el-table :data="orderDetail.orderGoods" size="small" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
-            <el-table-column align="center" label="商品编号" prop="goodsSn" />
-            <el-table-column align="center" label="商品规格" prop="specifications" />
-            <el-table-column align="center" label="商品价格" prop="price" />
-            <el-table-column align="center" label="商品数量" prop="number" />
-            <el-table-column align="center" label="商品图片" prop="picUrl">
+          <el-table
+            :data="orderDetail.orderGoods"
+            size="small"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column
+              align="center"
+              label="商品名称"
+              prop="goodsName"
+            />
+            <el-table-column
+              align="center"
+              label="商品编号"
+              prop="goodsSn"
+            />
+            <el-table-column
+              align="center"
+              label="商品规格"
+              prop="specifications"
+            />
+            <el-table-column
+              align="center"
+              label="商品价格"
+              prop="price"
+            />
+            <el-table-column
+              align="center"
+              label="商品数量"
+              prop="number"
+            />
+            <el-table-column
+              align="center"
+              label="商品图片"
+              prop="picUrl"
+            >
               <template slot-scope="scope">
-                <img :src="scope.row.picUrl" width="40" />
+                <img
+                  :src="scope.row.picUrl"
+                  width="40"
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -219,7 +283,10 @@
         <!-- 支付信息 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">支付信息</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >支付信息</el-col>
           </el-row>
           <el-row class="content-row">
             <el-col :span="24">支付渠道：微信支付</el-col>
@@ -235,7 +302,10 @@
         <!-- 收货信息 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">收货信息</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >收货信息</el-col>
           </el-row>
           <el-row class="content-row">
             <el-col :span="24">收货人：{{ orderDetail.order.consignee }}</el-col>
@@ -251,7 +321,10 @@
         <!-- 快递信息 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">快递信息</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >快递信息</el-col>
           </el-row>
           <el-row class="content-row">
             <el-col :span="24">快递公司：{{ orderDetail.order.shipChannel }}</el-col>
@@ -270,7 +343,10 @@
         <!-- 备注 -->
         <el-form-item>
           <el-row>
-            <el-col :span="24" class="section-title">备注</el-col>
+            <el-col
+              :span="24"
+              class="section-title"
+            >备注</el-col>
           </el-row>
           <el-row class="content-row">
             <el-col :span="24">{{ orderDetail.order.message }}</el-col>

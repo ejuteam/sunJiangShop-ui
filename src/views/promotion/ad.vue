@@ -1,40 +1,77 @@
 <template>
   <div class="app-container">
+    <div class="toolbar">
+      <el-card class="query-card">
+        <el-form
+          :inline="true"
+          label-width="80px"
+        >
+          <!-- 是否启用筛选 -->
+          <el-form-item label="是否启用">
+            <el-select
+              v-model="listQuery.enabled"
+              placeholder="请选择"
+              size="small"
+            >
+              <el-option
+                label="启用"
+                :value="1"
+              />
+              <el-option
+                label="禁用"
+                :value="0"
+              />
+            </el-select>
+          </el-form-item>
 
-    <!-- 查询和其他操作 -->
-    <div class="filter-container">
-      <el-input
-        v-model="listQuery.name"
-        clearable
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        placeholder="请输入广告标题"
-      />
-      <el-input
-        v-model="listQuery.content"
-        clearable
-        size="mini"
-        class="filter-item"
-        style="width: 200px;"
-        placeholder="请输入广告内容"
-      />
-      <el-button
-        v-permission="['GET /admin/ad/list']"
-        size="mini"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleFilter"
-      >查找</el-button>
-      <el-button
-        v-permission="['POST /admin/ad/create']"
-        size="mini"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >添加</el-button>
+          <!-- 关联商品下拉搜索 -->
+          <el-form-item label="关联商品">
+            <el-select
+              v-model="listQuery.goodsId"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="选择关联商品"
+              :remote-method="fetchGoodsOptions"
+              :loading="goodsLoading"
+              clearable
+            >
+              <el-option
+                v-for="item in goodsOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+
+          <!-- 查询和重置按钮组，使用一个新的 el-form-item 来调整位置 -->
+          <el-form-item
+            class="query-buttons"
+            style="margin-left: auto;"
+          >
+            <el-button
+              type="primary"
+              size="small"
+              icon="el-icon-search"
+              @click="getList"
+            >查找</el-button>
+            <el-button
+              size="small"
+              icon="el-icon-refresh"
+              @click="resetFilters"
+            >重置</el-button>
+            <el-button
+              v-permission="['POST /admin/ad/create']"
+              size="mini"
+              class="filter-item"
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleCreate"
+            >添加</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </div>
 
     <!-- 查询结果 -->
@@ -88,7 +125,7 @@
         prop="enabled"
       >
         <template slot-scope="scope">
-          <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
+          <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled == 1 ? '启用' : '不启用' }}</el-tag>
         </template>
       </el-table-column>
 
@@ -144,7 +181,7 @@
           <el-input v-model="dataForm.content"/>
         </el-form-item>-->
         <el-form-item
-          label="广告图片"
+          label="图片"
           prop="url"
         >
           <el-upload
@@ -205,11 +242,11 @@
             placeholder="请选择"
           >
             <el-option
-              :value="true"
+              :value="1"
               label="启用"
             />
             <el-option
-              :value="false"
+              :value="0"
               label="不启用"
             />
           </el-select>
@@ -279,7 +316,9 @@ export default {
         name: undefined,
         content: undefined,
         sort: 'add_time',
-        order: 'desc'
+        order: 'desc',
+        enabled: undefined,
+        goodsId: undefined
       },
       dataForm: {
         id: undefined,
@@ -288,7 +327,7 @@ export default {
         url: undefined,
         link: undefined,
         position: 1,
-        enabled: true
+        enabled: 0
       },
       listGoodsQuery: {
         page: 1,
@@ -326,8 +365,8 @@ export default {
     }
   },
   created() {
-    this.getList()
     this.fetchGoodsOptions()
+    this.getList()
   },
   methods: {
 
@@ -335,12 +374,7 @@ export default {
       this.listLoading = true
       listAd(this.listQuery)
         .then(response => {
-          this.list = response.data.data.items.map(ad => {
-            return {
-              ...ad,
-              goodsName: this.goodsMap[ad.goodsId] || '未知商品' // 根据ID回显商品名称
-            }
-          })
+          this.list = response.data.data.items
           this.total = response.data.data.total
           this.listLoading = false
         })
@@ -349,6 +383,7 @@ export default {
           this.total = 0
           this.listLoading = false
         })
+      console.log('this.list', this.list)
     },
     fetchGoodsOptions(query) {
       this.goodsLoading = true
@@ -378,7 +413,7 @@ export default {
         url: undefined,
         link: undefined,
         position: 1,
-        enabled: true,
+        enabled: 0,
         goodsId: ''
       }
     },
@@ -518,6 +553,19 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '广告信息')
         this.downloadLoading = false
       })
+    },
+    resetFilters() {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        name: undefined,
+        content: undefined,
+        sort: 'add_time',
+        order: 'desc',
+        enabled: undefined,
+        goodsId: undefined
+      }
+      this.getList()
     }
   }
 }
@@ -546,5 +594,10 @@ export default {
   width: 145px;
   height: 145px;
   display: block;
+}
+.query-buttons {
+  display: flex;
+  gap: 8px; /* 控制按钮之间的间距 */
+  margin-left: auto;
 }
 </style>

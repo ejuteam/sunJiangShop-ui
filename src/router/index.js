@@ -78,7 +78,7 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  {
+  /* {
     path: '/user',
     component: Layout,
     redirect: '/user/index',
@@ -95,7 +95,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
 
   {
     path: '/mall',
@@ -134,7 +134,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  {
+  /* {
     path: '/mall',
     component: Layout,
     redirect: 'noredirect',
@@ -151,8 +151,8 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
-  {
+  },*/
+  /* {
     path: '/goods',
     component: Layout,
     redirect: 'noredirect',
@@ -169,7 +169,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
   {
     path: '/promotion',
     component: Layout,
@@ -247,7 +247,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  {
+  /* {
     path: '/supplier',
     component: Layout,
     redirect: 'noredirect',
@@ -264,7 +264,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
   /*
   {
     path: '/promotion',
@@ -291,7 +291,7 @@ export const asyncRouterMap = [
     ]
   },*/
 
-  {
+  /* {
     path: '/sys',
     component: Layout,
     redirect: 'noredirect',
@@ -325,7 +325,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
 
   /* {
     path: '/stat',

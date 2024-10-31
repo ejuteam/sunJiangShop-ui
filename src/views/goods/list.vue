@@ -1,32 +1,108 @@
 <template>
   <div class="app-container">
-
     <!-- 查询和其他操作 -->
-    <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
-      <el-input v-model="listQuery.name" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
-      <!-- 分类选择框 -->
-      <el-select v-model="listQuery.categoryId" clearable size="mini" class="filter-item" style="width: 200px;" placeholder="请选择商品分类">
-        <el-option v-for="category in categoryList" :key="category.value" :label="category.label" :value="category.value"/>
-      </el-select>
-
-      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+    <div class="toolbar">
+      <el-card class="query-card">
+        <el-form
+          :inline="true"
+          label-width="80px"
+        >
+          <el-form-item label="商品编号">
+            <el-input
+              v-model="listQuery.goodsSn"
+              clearable
+              size="mini"
+              class="filter-item"
+              style="width: 200px;"
+              placeholder="请输入商品编号"
+            />
+          </el-form-item>
+          <el-form-item label="商品名称">
+            <el-input
+              v-model="listQuery.name"
+              clearable
+              size="mini"
+              class="filter-item"
+              style="width: 200px;"
+              placeholder="请输入商品名称"
+            />
+          </el-form-item>
+          <el-form-item label="商品分类">
+            <!-- 分类选择框 -->
+            <el-select
+              v-model="listQuery.categoryId"
+              clearable
+              size="mini"
+              class="filter-item"
+              style="width: 200px;"
+              placeholder="请选择商品分类"
+            >
+              <el-option
+                v-for="category in categoryList"
+                :key="category.value"
+                :label="category.label"
+                :value="category.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            class="query-buttons"
+            style="margin-left: auto;"
+          >
+            <el-button
+              size="mini"
+              class="filter-item"
+              type="primary"
+              icon="el-icon-search"
+              @click="handleFilter"
+            >查找</el-button>
+            <el-button
+              size="mini"
+              class="filter-item"
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleCreate"
+            >添加</el-button>
+            <el-button
+              size="mini"
+              class="filter-item"
+              icon="el-icon-refresh"
+              @click="resetFilters"
+            >重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" size="small" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      size="small"
+      element-loading-text="正在查询中。。。"
+      border
+      fit
+      highlight-current-row
+    >
 
       <el-table-column type="expand">
         <template slot-scope="props">
-          <el-form label-position="left" class="table-expand">
+          <el-form
+            label-position="left"
+            class="table-expand"
+          >
             <el-form-item label="商品图片">
-              <img v-for="pic in props.row.gallery" :key="pic" :src="pic" class="gallery">
+              <img
+                v-for="pic in props.row.gallery"
+                :key="pic"
+                :src="pic"
+                class="gallery"
+              >
             </el-form-item>
             <el-form-item label="商品介绍">
               <span>{{ props.row.brief }}</span>
             </el-form-item>
-<!--            <el-form-item label="商品单位">
+            <!--            <el-form-item label="商品单位">
               <span>{{ props.row.unit }}</span>
             </el-form-item>-->
             <el-form-item label="商品分类">
@@ -39,56 +115,82 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="110" label="商品编号" prop="goodsSn"/>
+      <el-table-column
+        align="center"
+        min-width="110"
+        label="商品编号"
+        prop="goodsSn"
+      />
 
-      <el-table-column align="center" min-width="200" label="名称" prop="name" sortable/>
+      <el-table-column
+        align="center"
+        min-width="200"
+        label="名称"
+        prop="name"
+        sortable
+      />
 
-      <el-table-column align="center" property="iconUrl" label="图片">
+      <el-table-column
+        align="center"
+        property="iconUrl"
+        label="图片"
+      >
         <template slot-scope="scope">
-          <img :src="scope.row.picUrl" width="40">
+          <img
+            :src="scope.row.picUrl"
+            width="40"
+          >
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
+      <el-table-column
+        align="center"
+        label="操作"
+        width="300"
+        class-name="small-padding fixed-width"
+      >
         <template slot-scope="scope">
-          <el-dialog :visible.sync="detailDialogVisible" title="商品详情">
-            <div v-html="goodsDetail"/>
+          <el-dialog
+            :visible.sync="detailDialogVisible"
+            title="商品详情"
+          >
+            <div v-html="goodsDetail" />
           </el-dialog>
-          <el-button type="primary" size="mini" @click="showDetail(scope.row)">查看</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="showDetail(scope.row)"
+          >查看</el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleUpdate(scope.row)"
+          >编辑</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            @click="handleDelete(scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
-    <el-tooltip placement="top" content="返回顶部">
+    <el-tooltip
+      placement="top"
+      content="返回顶部"
+    >
       <back-to-top :visibility-height="100" />
     </el-tooltip>
 
   </div>
 </template>
-
-<style>
-	.el-dialog {
-    width: 60%;
-	}
-  .table-expand {
-    font-size: 0;
-  }
-  .table-expand label {
-    width: 100px;
-    color: #99a9bf;
-  }
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-  }
-  .gallery {
-    width: 80px;
-    margin-right: 10px;
-  }
-</style>
 
 <script>
 import { listGoods, deleteGoods, listCategory } from '@/api/business/goods'
@@ -182,7 +284,40 @@ export default {
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
         this.downloadLoading = false
       })
+    },
+    resetFilters() {
+      // 重置查询条件
+      this.listQuery.goodsSn = ''
+      this.listQuery.name = ''
+      this.listQuery.sort = ''
+      this.listQuery.order = ''
+      this.listQuery.page = 1
+      this.listQuery.limit = 20
+
+      // 重新获取列表数据
+      this.getList()
     }
   }
 }
 </script>
+
+<style>
+	.el-dialog {
+    width: 60%;
+	}
+  .table-expand {
+    font-size: 0;
+  }
+  .table-expand label {
+    width: 100px;
+    color: #99a9bf;
+  }
+  .table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+  .gallery {
+    width: 80px;
+    margin-right: 10px;
+  }
+</style>
