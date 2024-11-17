@@ -545,7 +545,7 @@ export default {
     },
     handleFilter() {
       // 将选择的订单分类转换为状态数组
-      this.listQuery.orderStatusArray = this.listQuery.orderStatusArray.flat()
+      // this.listQuery.orderStatusArray = this.listQuery.orderStatusArray.flat()
 
       // 校验并格式化日期
       const isValidDate = (date) => /^\d{8}$/.test(date)
